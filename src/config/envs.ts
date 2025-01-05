@@ -2,13 +2,16 @@
 import 'dotenv/config'
 
 import * as joi from 'joi'
+import jwt from 'jsonwebtoken';
 
 interface EnvVars {
   PORT: number
+  JWT_SECRET: string
 }
 
 const envsSchema = joi.object({
-  PORT: joi.number().required()
+  PORT: joi.number().required(),
+  JWT_SECRET: joi.string().required()
 })
 .unknown(true);
 
@@ -22,7 +25,8 @@ if (error) {
 const envVars: EnvVars = value;
 
 export const envs = {
-  port: envVars.PORT
+  port: envVars.PORT,
+  jwtSecret: envVars.JWT_SECRET
 }
 
 

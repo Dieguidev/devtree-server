@@ -1,4 +1,5 @@
 export * from './dtos/auth/request-register-user.dto';
+export * from './dtos/auth/req-login-user.dto';
 
 
 
