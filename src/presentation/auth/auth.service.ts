@@ -1,6 +1,7 @@
 import { BcryptAdapter } from '../../config';
 import { prisma } from '../../data/prisma/prisma-db';
 import { CustomError, RegisterUserDto } from '../../domain';
+import { UserEntity } from '../../domain/entities/user.entity';
 
 type HashFunction = (password: string) => string;
 
@@ -16,6 +17,7 @@ export class AuthService {
       prisma.user.findUnique({ where: { email } }),
       prisma.user.findUnique({ where: { handle } }),
     ]);
+
     if (existEmail) {
       throw CustomError.badRequest('Email already exists');
     }
@@ -47,7 +49,7 @@ export class AuthService {
       // await this.sendEmailValidationSixdigitToken({ email: user.email, name: user.name, token: sixDigittoken.token })
 
       return {
-        user,
+        user: UserEntity.fromJson(user),
         // user: userEntity,
         // token
       };
