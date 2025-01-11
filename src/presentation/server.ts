@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import colors from 'colors'
-// import cors from 'cors'
-// import { corsConfig } from '../config/cors';
+import cors from 'cors'
+import { corsConfig } from '../config/cors';
 // import morgan from 'morgan';
 
 interface Options {
@@ -30,6 +30,8 @@ export class Server {
     // //middlewares
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+
+    this.app.use(cors(corsConfig));
 
     // //rutas
     this.app.use(this.routes);
