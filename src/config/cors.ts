@@ -9,6 +9,12 @@ export const corsConfig: CorsOptions = {
   // allowedHeaders: ['Content-Type', 'Authorization'],
   // credentials: true
   origin: function (origin, callback) {
+
+    if (process.argv[2] === '--api'){
+      callback(null, true);
+      return;
+    }
+
     if (origin === envs.frontendUrl) {
       callback(null, true);
     } else {
