@@ -9,19 +9,26 @@ export class UserService {
   }
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
-    const existsHandle = await prisma.user.findFirst({
-      where: {
-        handle: updateProfileDto.handle,
-      },
-    });
+    const { handle, description } = updateProfileDto;
 
-    if (existsHandle && existsHandle.id !== userId) {
-      throw CustomError.badRequest('Handle already exists');
+    if (handle) {
+      const existsHandle = await prisma.user.findFirst({
+        where: {
+          handle,
+        },
+      });
+
+      if (existsHandle && existsHandle.id !== userId) {
+        throw CustomError.badRequest('Handle already exists');
+      }
     }
 
     const userUpdate = await prisma.user.update({
       where: { id: userId },
-      data: updateProfileDto,
+      data: {
+        handle: handle ? handle : undefined,
+        description: description || undefined,
+      },
     });
 
     return userUpdate;

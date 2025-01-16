@@ -1,10 +1,10 @@
-import { slugify } from "../../utils/generate-slug";
+import { slugify } from '../../utils/generate-slug';
 
 export class UpdateProfileDto {
   private constructor(
-    public handle?: string,
-    public description?: string,
-  ){}
+    public handle?: string | null,
+    public description?: string | null
+  ) {}
 
   static create(object: {
     [key: string]: any;
@@ -13,12 +13,16 @@ export class UpdateProfileDto {
 
     const errors: { [key: string]: string } = {};
 
-    if(!handle && !description) errors.handle = 'At least one field must be filled';
+    if (!handle && !description)
+      errors.handle = 'At least one field must be filled';
 
     if (Object.keys(errors).length > 0) {
       return [errors];
     }
 
-    return [undefined, new UpdateProfileDto(slugify(handle), description)];
+    return [
+      undefined,
+      new UpdateProfileDto(handle ? slugify(handle) : null, description? description : null),
+    ];
   }
 }
