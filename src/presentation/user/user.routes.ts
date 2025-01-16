@@ -11,6 +11,7 @@ export class UserRoutes {
     const controller = new UserController( userService );
 
     router.get('/',[AuthMiddleware.validateJWT], controller.getUserId);
+    router.put('/',[AuthMiddleware.validateJWT], controller.updateProfile);
 
     return router;
   }
