@@ -34,4 +34,11 @@ export class UserController {
       .then(() => res.json({ message: 'Profile updated successfully' }))
       .catch((error) => this.handleError(error, res));
   };
+
+  uploadImage = (req: Request, res: Response) => {
+    this.userService
+      .uploadImage()
+      .then(() => res.json({ message: 'Image uploaded successfully' }))
+      .catch((error) => this.handleError(error, res));
+  }
 }
