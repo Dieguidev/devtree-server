@@ -4,13 +4,15 @@ export class UpdateProfileDto {
   private constructor(
     public handle?: string | null,
     public description?: string | null,
-    public links?: string | null
+    public links?: Array<{ name: string, url: string, enable: boolean }> | []
   ) {}
 
   static create(object: {
     [key: string]: any;
   }): [{ [key: string]: string }?, UpdateProfileDto?] {
     const { handle, description, links } = object;
+
+
 
     const errors: { [key: string]: string } = {};
 
@@ -26,7 +28,7 @@ export class UpdateProfileDto {
       new UpdateProfileDto(
         handle ? slugify(handle) : null,
         description ? description : null,
-        links ? links : null
+        links
       ),
     ];
   }
