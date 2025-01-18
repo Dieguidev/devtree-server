@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { CustomError, UpdateProfileDto } from '../../domain';
+import { CustomError, UpdateProfileDto, UploadImageDto } from '../../domain';
+import formidable from 'formidable';
+import cloudinary from '../../config/cloudinary';
+import { v4 as uuid } from 'uuid';
 
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -36,10 +39,32 @@ export class UserController {
   };
 
   uploadImage = (req: Request, res: Response) => {
+    const form = formidable({ multiples: false });
+    form.parse(req, (err, fields, files) => {
+      console.log(files.file![0].filepath);
 
-    this.userService
-      .uploadImage()
-      .then(() => res.json({ message: 'Image uploaded successfully' }))
-      .catch((error) => this.handleError(error, res));
-  }
+      cloudinary.uploader.upload(
+        files.file![0].filepath,
+        {public_id: uuid()},
+        (error, result) => {
+          if (error) {
+            throw CustomError.badRequest('Error to upload image');
+          }
+          if (result) {
+            console.log(result);
+          }
+        }
+      );
+    });
+    // const [error, uploadImageDto] = UploadImageDto.create(req.body);
+    // if (error) {
+    //   res.status(400).json({ error });
+    //   return;
+    // }
+
+    // this.userService
+    //   .uploadImage(req)
+    //   .then(() => res.json({ message: 'Image uploaded successfully' }))
+    //   .catch((error) => this.handleError(error, res));
+  };
 }

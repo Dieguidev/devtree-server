@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { CustomError, UserEntity } from '../../domain';
+import { CustomError, UploadImageDto, UserEntity } from '../../domain';
 import { UpdateProfileDto } from '../../domain/dtos/user/request-update-profile.dto';
 import { prisma } from '../../data/prisma/prisma-db';
 import formidable from 'formidable';
@@ -36,20 +36,23 @@ export class UserService {
     return userUpdate;
   }
 
-  async uploadImage(req){
-    const form = formidable({ multiples: false });
-    form.parse(req, (err, fields, files) => {
-      cloudinary.uploader.upload(files.file[0].filepath, {}, (error, result)=>{
-        if(error){
-          throw CustomError.badRequest('Error to upload image');
-        }
-        if(result){
-          console.log(result);
-        }
-      })
-    })
+  // async uploadImage(req: Request) {
+  //   const form = formidable({ multiples: false });
+  //   form.parse(req, (err, fields, files) => {
+  //     cloudinary.uploader.upload(
+  //       files.file[0].filepath,
+  //       {},
+  //       (error, result) => {
+  //         if (error) {
+  //           throw CustomError.badRequest('Error to upload image');
+  //         }
+  //         if (result) {
+  //           console.log(result);
+  //         }
+  //       }
+  //     );
+  //   });
 
-    console.log('deu certo');
-
-  }
+  //   console.log('deu certo');
+  // }
 }
