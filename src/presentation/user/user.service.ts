@@ -31,7 +31,7 @@ export class UserService {
       data: {
         handle: handle ? handle : undefined,
         description: description || undefined,
-        links: links || undefined,
+
       },
     });
 
