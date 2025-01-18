@@ -6,3 +6,5 @@ cloudinary.config({
   api_secret: 'uk1ZrJg8Y0X-H-Wi1kG6Wa3axsQ' // Click 'View API Keys' above to copy your API secret
 });
 
+export default cloudinary;
+

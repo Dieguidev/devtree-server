@@ -36,6 +36,7 @@ export class UserController {
   };
 
   uploadImage = (req: Request, res: Response) => {
+
     this.userService
       .uploadImage()
       .then(() => res.json({ message: 'Image uploaded successfully' }))

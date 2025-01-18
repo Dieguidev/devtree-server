@@ -3,6 +3,7 @@ import { CustomError, UserEntity } from '../../domain';
 import { UpdateProfileDto } from '../../domain/dtos/user/request-update-profile.dto';
 import { prisma } from '../../data/prisma/prisma-db';
 import formidable from 'formidable';
+import cloudinary from '../../config/cloudinary';
 
 export class UserService {
   async getUserById(user: User) {
@@ -38,7 +39,14 @@ export class UserService {
   async uploadImage(req){
     const form = formidable({ multiples: false });
     form.parse(req, (err, fields, files) => {
-
+      cloudinary.uploader.upload(files.file[0].filepath, {}, (error, result)=>{
+        if(error){
+          throw CustomError.badRequest('Error to upload image');
+        }
+        if(result){
+          console.log(result);
+        }
+      })
     })
 
     console.log('deu certo');
