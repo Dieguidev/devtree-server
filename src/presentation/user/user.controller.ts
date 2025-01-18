@@ -49,7 +49,6 @@ export class UserController {
       if (!file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
-      console.log(files.file);
 
       const validMimeTypes = [
         'image/jpeg',
@@ -63,7 +62,7 @@ export class UserController {
       }
 
       this.userService
-        .uploadImage(files.file![0].filepath, req.user!.id)
+        .uploadImage(files.file![0].filepath, req.user!)
         .then((user) => res.json(user))
         .catch((error) => this.handleError(error, res));
     });

@@ -37,20 +37,39 @@ export class UserService {
     return userUpdate;
   }
 
-  async uploadImage(filepath: string, userId: string) {
-    const result = await cloudinary.uploader.upload(filepath, { public_id: uuid() });
-
+  async uploadImage(filepath: string, user: User) {
+    const { id: userId, image } = user;
+    return await prisma.$transaction(async (prisma) => {
+      const result = await cloudinary.uploader.upload(filepath, {
+        public_id: uuid(),
+      });
       if (!result) {
         throw CustomError.badRequest('Error to upload image');
       }
 
-      const user = await prisma.user.update({
+      if (user?.image) {
+        const publicId = this.getPublicIdFromUrl(user.image);
+        const deleteResult = await cloudinary.uploader.destroy(publicId);
+
+        if (deleteResult.result !== 'ok') {
+          throw CustomError.badRequest('Error to delete previous image');
+        }
+      }
+
+      const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           image: result.secure_url,
         },
       });
+      return updatedUser.image!;
+    });
+  }
 
-      return user.image!;
+  private getPublicIdFromUrl(url: string): string {
+    const parts = url.split('/');
+    const publicIdWithExtension = parts[parts.length - 1];
+    const publicId = publicIdWithExtension.split('.')[0];
+    return publicId;
   }
 }
