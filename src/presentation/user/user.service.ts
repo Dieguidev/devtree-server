@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
-    const { handle, description } = updateProfileDto;
+    const { handle, description, links } = updateProfileDto;
 
     if (handle) {
       const existsHandle = await prisma.user.findFirst({
@@ -29,12 +29,13 @@ export class UserService {
     const userUpdate = await prisma.user.update({
       where: { id: userId },
       data: {
-        handle: handle ? handle : undefined,
+        handle:  handle || undefined,
         description: description || undefined,
+        links: links || undefined,
       },
     });
 
-    return userUpdate;
+    return UserEntity.fromJson(userUpdate);
   }
 
   async uploadImage(filepath: string, user: User) {
