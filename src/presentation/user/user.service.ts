@@ -4,6 +4,7 @@ import { UpdateProfileDto } from '../../domain/dtos/user/request-update-profile.
 import { prisma } from '../../data/prisma/prisma-db';
 import formidable from 'formidable';
 import cloudinary from '../../config/cloudinary';
+import { v4 as uuid } from 'uuid';
 
 export class UserService {
   async getUserById(user: User) {
@@ -37,26 +38,19 @@ export class UserService {
   }
 
   async uploadImage(filepath: string, userId: string) {
+    const result = await cloudinary.uploader.upload(filepath, { public_id: uuid() });
 
-      cloudinary.uploader.upload(
-        filepath,
-        {},
-        async (error, result) => {
-          if (error) {
-            throw CustomError.badRequest('Error to upload image');
-          }
-          if (result) {
-            await prisma.user.update({
-              where: { id: userId },
-              data: {
-                image: result.secure_url,
-              },
-            });
-          }
-        }
-      );
+      if (!result) {
+        throw CustomError.badRequest('Error to upload image');
+      }
 
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          image: result.secure_url,
+        },
+      });
 
-    console.log('deu certo');
+      return user.image!;
   }
 }

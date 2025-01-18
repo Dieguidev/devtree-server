@@ -7,6 +7,8 @@ export class UploadImageDto {
     [key: string]: any;
   }): [{ [key: string]: string }?, UploadImageDto?] {
     const { image } = object;
+    console.log(image);
+
 
     const errors: { [key: string]: string } = {};
 

@@ -39,12 +39,28 @@ export class UserController {
   };
 
   uploadImage = (req: Request, res: Response) => {
+
     const form = formidable({ multiples: false });
     form.parse(req, (err, fields, files) => {
+      if (err) {
+        return this.handleError(err, res);
+      }
+
+      const file = files.file as formidable.File | formidable.File[];
+      if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      console.log(files.file);
+
+
+      const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+      if (!validMimeTypes.includes(files.file![0].mimetype as string)) {
+        return res.status(400).json({ error: 'Invalid image format' });
+      }
 
       this.userService
         .uploadImage(files.file![0].filepath, req.user!.id)
-        .then(() => res.json({ message: 'Image uploaded successfully' }))
+        .then((user) => res.json(user))
         .catch((error) => this.handleError(error, res));
     });
     // const [error, uploadImageDto] = UploadImageDto.create(req.body);
