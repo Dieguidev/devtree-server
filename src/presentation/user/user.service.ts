@@ -8,11 +8,13 @@ import { v4 as uuid } from 'uuid';
 
 export class UserService {
   async getUserById(user: User) {
+
+
     return UserEntity.fromJson(user);
   }
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
-    const { handle, description } = updateProfileDto;
+    const { handle, description, links } = updateProfileDto;
 
     if (handle) {
       const existsHandle = await prisma.user.findFirst({
@@ -26,15 +28,43 @@ export class UserService {
       }
     }
 
+    const filteredLinks = links?.filter(link => link.url) || [];
+
+    const linkUpserts = filteredLinks.map(link => {
+      return prisma.links.upsert({
+        where: {
+          userId_name: {
+            userId: userId,
+            name: link.name,
+          },
+        },
+        update: {
+          url: link.url,
+          enable: link.enable,
+        },
+        create: {
+          name: link.name,
+          url: link.url,
+          enable: link.enable,
+          userId: userId,
+        },
+
+      });
+    });
+
+    // Ejecutar las operaciones de upsert en una transacción
+    await prisma.$transaction(linkUpserts);
+
     const userUpdate = await prisma.user.update({
       where: { id: userId },
       data: {
         handle: handle ? handle : undefined,
         description: description || undefined,
+
       },
     });
 
-    return userUpdate;
+    return UserEntity.fromJson(userUpdate);
   }
 
   async uploadImage(filepath: string, user: User) {

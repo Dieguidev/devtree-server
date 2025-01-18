@@ -88,7 +88,7 @@ export class AuthService {
 
 
   private async generateTokenService(id: string) {
-    const token = await JwtAdapter.generateToken({ id })
+    const token = await JwtAdapter.generateToken({ id }, '128d')
     if (!token) {
       throw CustomError.internalServer('Error generating token')
     }

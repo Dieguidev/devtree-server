@@ -3,13 +3,16 @@ import { slugify } from '../../utils/generate-slug';
 export class UpdateProfileDto {
   private constructor(
     public handle?: string | null,
-    public description?: string | null
+    public description?: string | null,
+    public links?: Array<{ name: string, url: string, enable: boolean }> | []
   ) {}
 
   static create(object: {
     [key: string]: any;
   }): [{ [key: string]: string }?, UpdateProfileDto?] {
-    const { handle, description } = object;
+    const { handle, description, links } = object;
+
+
 
     const errors: { [key: string]: string } = {};
 
@@ -22,7 +25,11 @@ export class UpdateProfileDto {
 
     return [
       undefined,
-      new UpdateProfileDto(handle ? slugify(handle) : null, description? description : null),
+      new UpdateProfileDto(
+        handle ? slugify(handle) : null,
+        description ? description : null,
+        links
+      ),
     ];
   }
 }
