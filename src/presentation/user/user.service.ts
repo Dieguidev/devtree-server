@@ -13,6 +13,7 @@ export class UserService {
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
     const { handle, description, links } = updateProfileDto;
+    console.log(links);
 
     if (handle) {
       const existsHandle = await prisma.user.findFirst({
