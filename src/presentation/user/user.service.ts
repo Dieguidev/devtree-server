@@ -36,23 +36,27 @@ export class UserService {
     return userUpdate;
   }
 
-  // async uploadImage(req: Request) {
-  //   const form = formidable({ multiples: false });
-  //   form.parse(req, (err, fields, files) => {
-  //     cloudinary.uploader.upload(
-  //       files.file[0].filepath,
-  //       {},
-  //       (error, result) => {
-  //         if (error) {
-  //           throw CustomError.badRequest('Error to upload image');
-  //         }
-  //         if (result) {
-  //           console.log(result);
-  //         }
-  //       }
-  //     );
-  //   });
+  async uploadImage(filepath: string, userId: string) {
 
-  //   console.log('deu certo');
-  // }
+      cloudinary.uploader.upload(
+        filepath,
+        {},
+        async (error, result) => {
+          if (error) {
+            throw CustomError.badRequest('Error to upload image');
+          }
+          if (result) {
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                image: result.secure_url,
+              },
+            });
+          }
+        }
+      );
+
+
+    console.log('deu certo');
+  }
 }

@@ -41,20 +41,11 @@ export class UserController {
   uploadImage = (req: Request, res: Response) => {
     const form = formidable({ multiples: false });
     form.parse(req, (err, fields, files) => {
-      console.log(files.file![0].filepath);
 
-      cloudinary.uploader.upload(
-        files.file![0].filepath,
-        {public_id: uuid()},
-        (error, result) => {
-          if (error) {
-            throw CustomError.badRequest('Error to upload image');
-          }
-          if (result) {
-            console.log(result);
-          }
-        }
-      );
+      this.userService
+        .uploadImage(files.file![0].filepath, req.user!.id)
+        .then(() => res.json({ message: 'Image uploaded successfully' }))
+        .catch((error) => this.handleError(error, res));
     });
     // const [error, uploadImageDto] = UploadImageDto.create(req.body);
     // if (error) {
@@ -63,7 +54,7 @@ export class UserController {
     // }
 
     // this.userService
-    //   .uploadImage(req)
+    //   .uploadImage(files.file![0].filepath)
     //   .then(() => res.json({ message: 'Image uploaded successfully' }))
     //   .catch((error) => this.handleError(error, res));
   };
