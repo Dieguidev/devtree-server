@@ -29,7 +29,7 @@ export class UserService {
     const userUpdate = await prisma.user.update({
       where: { id: userId },
       data: {
-        handle:  handle || undefined,
+        handle: handle ? handle : undefined,
         description: description || undefined,
         links: links || undefined,
       },
