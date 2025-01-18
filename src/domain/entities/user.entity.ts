@@ -9,6 +9,7 @@ export class UserEntity {
     public readonly isActive: boolean,
     public readonly createdAt: Date,
     public readonly description?: string,
+    public readonly image?: string
   ) {}
 
   static fromJson(object: { [key: string]: any }): UserEntity{
@@ -19,7 +20,8 @@ export class UserEntity {
       handle,
       isActive,
       createdAt,
-      description
+      description,
+      image
     }= object;
 
     if (!id ) throw CustomError.badRequest('Missing ID');
@@ -36,7 +38,8 @@ export class UserEntity {
       email,
       isActive,
       createdAt,
-      description
+      description,
+      image
     );
   }
 }

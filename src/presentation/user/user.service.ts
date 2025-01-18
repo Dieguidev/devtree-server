@@ -1,7 +1,10 @@
 import { User } from '@prisma/client';
-import { CustomError, UserEntity } from '../../domain';
+import { CustomError, UploadImageDto, UserEntity } from '../../domain';
 import { UpdateProfileDto } from '../../domain/dtos/user/request-update-profile.dto';
 import { prisma } from '../../data/prisma/prisma-db';
+import formidable from 'formidable';
+import cloudinary from '../../config/cloudinary';
+import { v4 as uuid } from 'uuid';
 
 export class UserService {
   async getUserById(user: User) {
@@ -32,5 +35,41 @@ export class UserService {
     });
 
     return userUpdate;
+  }
+
+  async uploadImage(filepath: string, user: User) {
+    const { id: userId, image } = user;
+    return await prisma.$transaction(async (prisma) => {
+      const result = await cloudinary.uploader.upload(filepath, {
+        public_id: uuid(),
+      });
+      if (!result) {
+        throw CustomError.badRequest('Error to upload image');
+      }
+
+      if (user?.image) {
+        const publicId = this.getPublicIdFromUrl(user.image);
+        const deleteResult = await cloudinary.uploader.destroy(publicId);
+
+        if (deleteResult.result !== 'ok') {
+          throw CustomError.badRequest('Error to delete previous image');
+        }
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          image: result.secure_url,
+        },
+      });
+      return updatedUser.image!;
+    });
+  }
+
+  private getPublicIdFromUrl(url: string): string {
+    const parts = url.split('/');
+    const publicIdWithExtension = parts[parts.length - 1];
+    const publicId = publicIdWithExtension.split('.')[0];
+    return publicId;
   }
 }

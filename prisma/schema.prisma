@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  handle    String   @unique
-  name      String
-  email     String   @unique
-  password  String
+  id          String   @id @default(uuid())
+  handle      String   @unique
+  name        String
+  email       String   @unique
+  password    String
   description String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  image       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
