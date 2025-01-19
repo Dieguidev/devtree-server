@@ -13,8 +13,8 @@ export class UserRoutes {
     router.get('/',[AuthMiddleware.validateJWT], controller.getUserId);
     router.put('/',[AuthMiddleware.validateJWT], controller.updateProfile);
     router.post('/upload-image',[AuthMiddleware.validateJWT], controller.uploadImage);
-    router.get('/search', controller.searchIfTheHandleExistsDto)
-    router.post('/:handle', controller.getUserByHandle);
+    router.post('/search', controller.searchIfTheHandleExistsDto)
+    router.get('/:handle', controller.getUserByHandle);
 
     return router;
   }
