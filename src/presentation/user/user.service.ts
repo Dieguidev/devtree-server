@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { CustomError, UploadImageDto, UserEntity } from '../../domain';
+import { CustomError, SearchIfTheHandleExistsDto, UploadImageDto, UserEntity } from '../../domain';
 import { UpdateProfileDto } from '../../domain/dtos/user/request-update-profile.dto';
 import { prisma } from '../../data/prisma/prisma-db';
 import formidable from 'formidable';
@@ -111,6 +111,21 @@ export class UserService {
       });
       return updatedUser.image!;
     });
+  }
+
+  async searchIfTheHandleExists(searchIfTheHandleExistsDto: SearchIfTheHandleExistsDto) {
+
+    const { handle } = searchIfTheHandleExistsDto
+    const user = await prisma.user.findFirst({
+      where: {
+        handle,
+      },
+    });
+    if (user) {
+      return 'already exists';
+    }
+
+    return 'available';
   }
 
   private getPublicIdFromUrl(url: string): string {

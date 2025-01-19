@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { CustomError, UpdateProfileDto, UploadImageDto } from '../../domain';
+import { CustomError, SearchIfTheHandleExistsDto, UpdateProfileDto, UploadImageDto } from '../../domain';
 import formidable from 'formidable';
 
 
@@ -73,4 +73,17 @@ export class UserController {
         .catch((error) => this.handleError(error, res));
     });
   };
+
+  searchIfTheHandleExistsDto = (req: Request, res: Response) => {
+    const [error, searchIfTheHandleExistsDto] = SearchIfTheHandleExistsDto.create(req.body);
+    if (error) {
+      res.status(400).json({ error });
+      return;
+    }
+
+    this.userService
+      .searchIfTheHandleExists(searchIfTheHandleExistsDto!)
+      .then((exists) => res.json(exists))
+      .catch((error) => this.handleError(error, res));
+  }
 }
