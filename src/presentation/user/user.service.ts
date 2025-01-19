@@ -16,6 +16,9 @@ export class UserService {
       where: {
         handle,
       },
+      include: {
+        Links: true,
+      },
     });
 
     if (!user) {
