@@ -122,7 +122,7 @@ export class UserService {
       },
     });
     if (user) {
-      return 'already exists';
+      throw CustomError.badRequest('Handle already exists');
     }
 
     return 'available';
