@@ -4,7 +4,7 @@ export class UpdateProfileDto {
   private constructor(
     public handle?: string | null,
     public description?: string | null,
-    public links?: Array<{ name: string, url: string, enable: boolean }> | []
+    public links?: Array<{ name: string, url: string, enable: boolean, order: number }> | []
   ) {}
 
   static create(object: {

@@ -47,6 +47,7 @@ export class UserService {
           url: link.url,
           enable: link.enable,
           userId: userId,
+          order: link.order,
         },
 
       });
