@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { CustomError, UpdateProfileDto, UploadImageDto } from '../../domain';
 import formidable from 'formidable';
-import cloudinary from '../../config/cloudinary';
-import { v4 as uuid } from 'uuid';
+
 
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -16,6 +15,13 @@ export class UserController {
     console.log(`${error}`);
 
     return res.status(500).json({ error: 'Internal Server Error' });
+  };
+
+  getUserByHandle = (req: Request, res: Response) => {
+    this.userService
+      .getUserByHandle(req.params.handle)
+      .then((user) => res.json(user))
+      .catch((error) => this.handleError(error, res));
   };
 
   getUserId = (req: Request, res: Response) => {

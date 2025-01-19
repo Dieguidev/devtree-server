@@ -8,9 +8,27 @@ import { v4 as uuid } from 'uuid';
 
 export class UserService {
   async getUserById(user: User) {
-
-
     return UserEntity.fromJson(user);
+  }
+
+  async getUserByHandle(handle: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        handle,
+      },
+      include: {
+        Links: true,
+      },
+    });
+
+    if (!user) {
+      throw CustomError.notFound('User not found');
+    }
+
+    const userEntity = UserEntity.fromJson(user);
+    const { email,id, isActive, createdAt,  ...userWithoutEmail } = userEntity;
+
+    return userWithoutEmail;
   }
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
@@ -28,9 +46,9 @@ export class UserService {
       }
     }
 
-    const filteredLinks = links?.filter(link => link.url) || [];
+    const filteredLinks = links?.filter((link) => link.url) || [];
 
-    const linkUpserts = filteredLinks.map(link => {
+    const linkUpserts = filteredLinks.map((link) => {
       return prisma.links.upsert({
         where: {
           userId_name: {
@@ -49,7 +67,6 @@ export class UserService {
           userId: userId,
           order: link.order,
         },
-
       });
     });
 
@@ -61,7 +78,6 @@ export class UserService {
       data: {
         handle: handle ? handle : undefined,
         description: description || undefined,
-
       },
     });
 
