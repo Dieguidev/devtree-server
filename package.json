@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsnd --respawn --clear src/app.ts --api",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node dist/app.js"
+    "start": "npx prisma migrate deploy && node dist/index.js"
   },
   "keywords": [],
   "author": "",

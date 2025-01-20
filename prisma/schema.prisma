@@ -11,6 +11,8 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  //* esta linea es para el deploy en hosting
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
