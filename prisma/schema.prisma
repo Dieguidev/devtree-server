@@ -6,13 +6,15 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.0.x"]
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  //* esta linea es para el deploy en hosting
+  // esta linea es para el deploy en hosting
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+
 }
 
 model User {
